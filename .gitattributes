@@ -1,2 +1,111 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+DROP TABLE IF EXISTS `administrador`;
+
+CREATE TABLE `administrador` (
+  `cod_adm` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(30) NOT NULL,
+  `sobrenome` varchar(30) NOT NULL,
+  `cpf` varchar(11) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `telefone` varchar(11) NOT NULL,
+  `status` varchar(7) NOT NULL DEFAULT 'Ativo',
+  `reg_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cod_adm`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `usuario` (`usuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `carrinho`;
+
+CREATE TABLE `carrinho` (
+  `cod_produto` int(6) NOT NULL,
+  `cod_usuario` int(6) NOT NULL,
+  `descricao` varchar(100) NOT NULL,
+  `quantidade` int(11) NOT NULL,
+  `preco` decimal(6,2) unsigned NOT NULL,
+  `categoria` varchar(30) NOT NULL,
+  `complemento` varchar(130) DEFAULT NULL,
+  `cod_carrinho` int(20) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`cod_carrinho`)
+) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `cliente`;
+
+CREATE TABLE `cliente` (
+  `cod_cliente` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(30) NOT NULL,
+  `sobrenome` varchar(30) NOT NULL,
+  `cpf` varchar(11) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `telefone` varchar(11) NOT NULL,
+  `status` varchar(7) NOT NULL DEFAULT 'Ativo',
+  `reg_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cod_cliente`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `usuario` (`usuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `endereco`;
+
+CREATE TABLE `endereco` (
+  `cod_endereco` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `uf` varchar(2) NOT NULL,
+  `cidade` varchar(30) NOT NULL,
+  `cep` varchar(8) NOT NULL,
+  `rua` varchar(100) NOT NULL,
+  `numero` int(6) NOT NULL,
+  `cod_cliente` int(6) unsigned NOT NULL,
+  `status` varchar(7) NOT NULL DEFAULT 'Ativo',
+  PRIMARY KEY (`cod_endereco`),
+  KEY `cod_cliente_fk` (`cod_cliente`),
+  CONSTRAINT `endereco_ibfk_1` FOREIGN KEY (`cod_cliente`) REFERENCES `cliente` (`cod_cliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `pedido`;
+
+CREATE TABLE `pedido` (
+  `cod_pedido` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `cod_cliente` int(6) unsigned NOT NULL,
+  `cod_endereco` int(6) unsigned NOT NULL,
+  `forma_pagamento` varchar(30) NOT NULL,
+  `frete` decimal(6,2) unsigned NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'Em andamento',
+  `data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cod_pedido`),
+  KEY `cod_cliente_fk` (`cod_cliente`),
+  KEY `cod_endereco_fk` (`cod_endereco`),
+  CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`cod_cliente`) REFERENCES `cliente` (`cod_cliente`),
+  CONSTRAINT `pedido_ibfk_2` FOREIGN KEY (`cod_endereco`) REFERENCES `endereco` (`cod_endereco`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `pedido_produto`;
+
+CREATE TABLE `pedido_produto` (
+  `cod_pedido` int(6) NOT NULL,
+  `cod_produto` int(6) NOT NULL,
+  `descricao` varchar(100) NOT NULL,
+  `quantidade` int(11) NOT NULL,
+  `preco` decimal(6,2) unsigned NOT NULL,
+  `categoria` varchar(30) NOT NULL,
+  `complemento` varchar(130) NOT NULL,
+  PRIMARY KEY (`cod_pedido`,`cod_produto`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `produto`;
+
+CREATE TABLE `produto` (
+  `cod_produto` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `descricao` varchar(100) NOT NULL,
+  `ingredientes` varchar(255) NOT NULL,
+  `categoria` varchar(30) NOT NULL,
+  `preco` decimal(6,2) unsigned NOT NULL,
+  `disponibilidade` varchar(15) NOT NULL DEFAULT 'Disponivel',
+  `imagem` varchar(255) NOT NULL DEFAULT '-',
+  PRIMARY KEY (`cod_produto`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
